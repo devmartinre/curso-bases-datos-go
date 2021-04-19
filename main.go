@@ -1,9 +1,13 @@
 package main
 
 import (
-	"fmt"
+	"github.com/whiteagleinc-meli/curso-bases-datos-go/storage"
 )
 
 func main() {
-	fmt.Printf("EDteam")
+	storage.NewPostgresDB()
+	storage.NewPostgresDB()
+	storage.NewPostgresDB()
+	storage.NewPostgresDB()
+	storage.NewPostgresDB()
 }
