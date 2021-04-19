@@ -18,7 +18,7 @@ func NewPostgresDB() {
 	once.Do(func() {
 		var err error
 		db, err := sql.Open("postgres",
-			"user=postgres dbname=curso_go password=E5p1n0z4% host=localhost sslmode=disable")
+			"user=postgres dbname=curso_go password=XXXX host=localhost sslmode=disable")
 		if err != nil {
 			log.Fatalf("can´t open db: %v", err)
 		}
