@@ -29,6 +29,7 @@ const (
 	psqlGetProductByID = psqlGetAllProduct + " WHERE id = $1"
 	psqlUpdateProduct  = `UPDATE products SET name = $1, observations = $2, 
 	price = $3, updated_at = $4 WHERE id = $5`
+	psqlDeleteProduct = `DELETE FROM products WHERE id = $1`
 )
 
 // PsqlProduct used to work with postgres - product
@@ -176,6 +177,25 @@ func (p *PsqlProduct) Update(m *product.Model) error {
 	}
 
 	fmt.Println("product was updated successfully")
+	return nil
+}
+
+// Delete implement the interface product.Storage
+func (p *PsqlProduct) Delete(id uint) error {
+	stmt, err := p.db.Prepare(psqlDeleteProduct)
+
+	if err != nil {
+		return err
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(id)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("Product was deleted successfully")
 	return nil
 }
 

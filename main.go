@@ -71,19 +71,28 @@ func main() {
 	// 	fmt.Println(m)
 	// }
 
+	// storageProduct := storage.NewPsqlProduct(storage.Pool())
+	// serviceProduct := product.NewService(storageProduct)
+
+	// m := &product.Model{
+	// 	ID:           5,
+	// 	Name:         "Curso de Python",
+	// 	Observations: "This is Python Course",
+	// 	Price:        120,
+	// }
+
+	// err := serviceProduct.Update(m)
+
+	// if err != nil {
+	// 	log.Fatalf("product.Update: %v", err)
+	// }
+
 	storageProduct := storage.NewPsqlProduct(storage.Pool())
 	serviceProduct := product.NewService(storageProduct)
 
-	m := &product.Model{
-		ID:           5,
-		Name:         "Curso de Python",
-		Observations: "This is Python Course",
-		Price:        120,
-	}
-
-	err := serviceProduct.Update(m)
+	err := serviceProduct.Delete(3)
 
 	if err != nil {
-		log.Fatalf("product.Update: %v", err)
+		log.Fatalf("product.Delete: %v", err)
 	}
 }
