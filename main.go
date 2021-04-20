@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/whiteagleinc-meli/curso-bases-datos-go/pkg/product"
@@ -58,14 +57,33 @@ func main() {
 
 	// fmt.Println(ms)
 
+	// storageProduct := storage.NewPsqlProduct(storage.Pool())
+	// serviceProduct := product.NewService(storageProduct)
+
+	// m, err := serviceProduct.GetByID(3)
+
+	// switch {
+	// case errors.Is(err, sql.ErrNoRows):
+	// 	fmt.Println("There is not a product with this ID")
+	// case err != nil:
+	// 	log.Fatalf("product.GetByID: %v", err)
+	// default:
+	// 	fmt.Println(m)
+	// }
+
 	storageProduct := storage.NewPsqlProduct(storage.Pool())
 	serviceProduct := product.NewService(storageProduct)
 
-	m, err := serviceProduct.GetByID(2)
-
-	if err != nil {
-		log.Fatalf("product.GetByID: %v", err)
+	m := &product.Model{
+		ID:           5,
+		Name:         "Curso de Python",
+		Observations: "This is Python Course",
+		Price:        120,
 	}
 
-	fmt.Println(m)
+	err := serviceProduct.Update(m)
+
+	if err != nil {
+		log.Fatalf("product.Update: %v", err)
+	}
 }
