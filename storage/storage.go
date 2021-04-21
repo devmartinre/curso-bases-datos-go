@@ -8,6 +8,7 @@ import (
 	"time"
 
 	_ "github.com/lib/pq"
+	"github.com/whiteagleinc-meli/curso-bases-datos-go/pkg/product"
 )
 
 var (
@@ -15,20 +16,54 @@ var (
 	once sync.Once
 )
 
-func NewPostgresDB() {
+// Driver of storage
+type Driver string
+
+// Drivers
+const (
+	MySQL    Driver = "MYSQL"
+	Postgres Driver = "POSTGRES"
+)
+
+// New create the connection with db
+func New(d Driver) {
+	switch d {
+	case MySQL:
+		newMySQLDB()
+	case Postgres:
+		newPostgresDB()
+	}
+}
+
+func newPostgresDB() {
 	once.Do(func() {
 		var err error
-		db, err = sql.Open("postgres",
-			"user=postgres password=E5p1n0z4% dbname=curso_go host=localhost sslmode=disable")
+		db, err = sql.Open("postgres", "postgres://edteam:edteam@localhost:7530/godb?sslmode=disable")
 		if err != nil {
-			log.Fatalf("can´t open db: %v", err)
+			log.Fatalf("can't open db: %v", err)
 		}
 
 		if err = db.Ping(); err != nil {
-			log.Fatalf("cant´t do ping: %v", err)
+			log.Fatalf("can't do ping: %v", err)
 		}
 
-		fmt.Println("Connected to Postgres")
+		fmt.Println("conectado a postgres")
+	})
+}
+
+func newMySQLDB() {
+	once.Do(func() {
+		var err error
+		db, err = sql.Open("mysql", "edteam:edteam@tcp(localhost:7531)/godb?parseTime=true")
+		if err != nil {
+			log.Fatalf("can't open db: %v", err)
+		}
+
+		if err = db.Ping(); err != nil {
+			log.Fatalf("can't do ping: %v", err)
+		}
+
+		fmt.Println("conectado a mySQL")
 	})
 }
 
@@ -51,4 +86,41 @@ func timeToNull(t time.Time) sql.NullTime {
 		null.Valid = true
 	}
 	return null
+}
+
+type scanner interface {
+	Scan(dest ...interface{}) error
+}
+
+func scanRowProduct(s scanner) (*product.Model, error) {
+	m := &product.Model{}
+	observationNull := sql.NullString{}
+	updatedAtNull := sql.NullTime{}
+
+	err := s.Scan(
+		&m.ID,
+		&m.Name,
+		&observationNull,
+		&m.Price,
+		&m.CreatedAt,
+		&updatedAtNull,
+	)
+	if err != nil {
+		return &product.Model{}, err
+	}
+
+	m.Observations = observationNull.String
+	m.UpdatedAt = updatedAtNull.Time
+
+	return m, nil
+}
+
+// DAOProduct factory of product.Storage
+func DAOProduct(driver Driver) (product.Storage, error) {
+	switch driver {
+	case Postgres:
+		return newPsqlProduct(db), nil
+	default:
+		return nil, fmt.Errorf("Driver not implemented")
+	}
 }

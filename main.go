@@ -3,12 +3,14 @@ package main
 import (
 	"log"
 
-	"github.com/whiteagleinc-meli/curso-bases-datos-go/pkg/product"
+	"github.com/whiteagleinc-meli/curso-bases-datos-go/pkg/invoice"
+	"github.com/whiteagleinc-meli/curso-bases-datos-go/pkg/invoiceheader"
+	"github.com/whiteagleinc-meli/curso-bases-datos-go/pkg/invoiceitem"
 	"github.com/whiteagleinc-meli/curso-bases-datos-go/storage"
 )
 
 func main() {
-	storage.NewPostgresDB()
+	storage.New(storage.Postgres)
 
 	//storageProduct := storage.NewPsqlProduct(storage.Pool())
 	//serviceProduct := product.NewService(storageProduct)
@@ -87,12 +89,40 @@ func main() {
 	// 	log.Fatalf("product.Update: %v", err)
 	// }
 
-	storageProduct := storage.NewPsqlProduct(storage.Pool())
-	serviceProduct := product.NewService(storageProduct)
+	// storageProduct := storage.NewPsqlProduct(storage.Pool())
+	// serviceProduct := product.NewService(storageProduct)
 
-	err := serviceProduct.Delete(3)
+	// err := serviceProduct.Delete(3)
 
-	if err != nil {
-		log.Fatalf("product.Delete: %v", err)
+	// if err != nil {
+	// 	log.Fatalf("product.Delete: %v", err)
+	// }
+
+	storageHeader := storage.NewPsqlInvoiceHeader(storage.Pool())
+	storageItems := storage.NewPsqlInvoiceItem(storage.Pool())
+	storageInvoice := storage.NewPsqlInvoice(
+		storage.Pool(),
+		storageHeader,
+		storageItems,
+	)
+
+	m := &invoice.Model{
+		Header: &invoiceheader.Model{
+			Client: "Martin Rangel",
+		},
+		Items: invoiceitem.Models{
+			&invoiceitem.Model{ProductID: 4},
+			&invoiceitem.Model{ProductID: 5},
+		},
+	}
+
+	serviceInvoice := invoice.NewService(storageInvoice)
+	if err := serviceInvoice.Create(m); err != nil {
+		log.Fatalf("invoice.Create: %v", err)
+	}
+
+	serviceInvoice = invoice.NewService(storageInvoice)
+	if err := serviceInvoice.Create(m); err != nil {
+		log.Fatalf("invoice.Create: %v", err)
 	}
 }
