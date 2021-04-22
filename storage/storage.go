@@ -7,6 +7,7 @@ import (
 	"sync"
 	"time"
 
+	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
 	"github.com/whiteagleinc-meli/curso-bases-datos-go/pkg/product"
 )
@@ -38,7 +39,8 @@ func New(d Driver) {
 func newPostgresDB() {
 	once.Do(func() {
 		var err error
-		db, err = sql.Open("postgres", "postgres://edteam:edteam@localhost:7530/godb?sslmode=disable")
+		db, err = sql.Open("mysql",
+			"root:E5p1n0z4%@tcp(localhost:3306)/mysql_go?parseTime=true")
 		if err != nil {
 			log.Fatalf("can't open db: %v", err)
 		}
@@ -54,7 +56,8 @@ func newPostgresDB() {
 func newMySQLDB() {
 	once.Do(func() {
 		var err error
-		db, err = sql.Open("mysql", "edteam:edteam@tcp(localhost:7531)/godb?parseTime=true")
+		db, err = sql.Open("mysql",
+			"root:E5p1n0z4%@tcp(localhost:3306)/mysql_go?parseTime=true")
 		if err != nil {
 			log.Fatalf("can't open db: %v", err)
 		}
