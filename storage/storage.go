@@ -39,8 +39,7 @@ func New(d Driver) {
 func newPostgresDB() {
 	once.Do(func() {
 		var err error
-		db, err = sql.Open("mysql",
-			"root:E5p1n0z4%@tcp(localhost:3306)/mysql_go?parseTime=true")
+		db, err = sql.Open("postgres", "postgres://edteam:edteam@localhost:7530/godb?sslmode=disable")
 		if err != nil {
 			log.Fatalf("can't open db: %v", err)
 		}
