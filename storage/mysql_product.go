@@ -23,7 +23,7 @@ const (
 	mySQLGetProductByID = mySQLGetAllProduct + " WHERE id = ?"
 	mySQLUpdateProduct  = `UPDATE products SET name = ?, observations = ?,
 	price = ?, updated_at = ? WHERE id = ?`
-	mySQLDeleteProduct = `DELETE FROM products WHERE id = $1`
+	mySQLDeleteProduct = `DELETE FROM products WHERE id = ?`
 )
 
 // MySQLProduct used for work with mySQL - product

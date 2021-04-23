@@ -3,7 +3,9 @@ package main
 import (
 	"log"
 
-	"github.com/whiteagleinc-meli/curso-bases-datos-go/pkg/product"
+	"github.com/whiteagleinc-meli/curso-bases-datos-go/pkg/invoice"
+	"github.com/whiteagleinc-meli/curso-bases-datos-go/pkg/invoiceheader"
+	"github.com/whiteagleinc-meli/curso-bases-datos-go/pkg/invoiceitem"
 	"github.com/whiteagleinc-meli/curso-bases-datos-go/storage"
 )
 
@@ -183,11 +185,33 @@ func main() {
 	// 	log.Fatalf("product.Update: %v", err)
 	// }
 
-	storageProduct := storage.NewMySQLProduct(storage.Pool())
-	serviceProduct := product.NewService(storageProduct)
+	// storageProduct := storage.NewMySQLProduct(storage.Pool())
+	// serviceProduct := product.NewService(storageProduct)
 
-	err := serviceProduct.Delete(1)
-	if err != nil {
-		log.Fatalf("product.Delete: %v", err)
+	// err := serviceProduct.Delete(1)
+	// if err != nil {
+	// 	log.Fatalf("product.Delete: %v", err)
+	// }
+
+	storageHeader := storage.NewMySQLInvoiceHeader(storage.Pool())
+	storageItems := storage.NewMySQLInvoiceItem(storage.Pool())
+	storageInvoice := storage.NewMySQLInvoice(
+		storage.Pool(),
+		storageHeader,
+		storageItems,
+	)
+
+	m := &invoice.Model{
+		Header: &invoiceheader.Model{
+			Client: "Alexys",
+		},
+		Items: invoiceitem.Models{
+			&invoiceitem.Model{ProductID: 1},
+		},
+	}
+
+	serviceInvoice := invoice.NewService(storageInvoice)
+	if err := serviceInvoice.Create(m); err != nil {
+		log.Fatalf("invoice.Create: %v", err)
 	}
 }
