@@ -3,8 +3,6 @@ package main
 import (
 	"log"
 
-	"github.com/whiteagleinc-meli/curso-bases-datos-go/pkg/invoiceheader"
-	"github.com/whiteagleinc-meli/curso-bases-datos-go/pkg/invoiceitem"
 	"github.com/whiteagleinc-meli/curso-bases-datos-go/pkg/product"
 	"github.com/whiteagleinc-meli/curso-bases-datos-go/storage"
 )
@@ -128,24 +126,68 @@ func main() {
 
 	storage.New(storage.MySQL)
 
+	// storageProduct := storage.NewMySQLProduct(storage.Pool())
+	// serviceProduct := product.NewService(storageProduct)
+
+	// if err := serviceProduct.Migrate(); err != nil {
+	// 	log.Fatalf("product.Migrate: %v", err)
+	// }
+
+	// storageHeader := storage.NewMySQLInvoiceHeader(storage.Pool())
+	// serviceHeader := invoiceheader.NewService(storageHeader)
+
+	// if err := serviceHeader.Migrate(); err != nil {
+	// 	log.Fatalf("header.Migrate: %v", err)
+	// }
+
+	// storageItem := storage.NewMySQLInvoiceItem(storage.Pool())
+	// serviceItem := invoiceitem.NewService(storageItem)
+
+	// if err := serviceItem.Migrate(); err != nil {
+	// 	log.Fatalf("item.Migrate: %v", err)
+	// }
+
+	// storageProduct := storage.NewMySQLProduct(storage.Pool())
+	// serviceProduct := product.NewService(storageProduct)
+
+	// ms, err := serviceProduct.GetAll()
+	// if err != nil {
+	// 	log.Fatalf("product.GetAll: %v", err)
+	// }
+
+	// fmt.Println(ms)
+
+	// storageProduct := storage.NewMySQLProduct(storage.Pool())
+	// serviceProduct := product.NewService(storageProduct)
+
+	// m, err := serviceProduct.GetByID(1)
+	// switch {
+	// case errors.Is(err, sql.ErrNoRows):
+	// 	fmt.Println("no hay un producto con este id")
+	// case err != nil:
+	// 	log.Fatalf("product.GetByID: %v", err)
+	// default:
+	// 	fmt.Println(m)
+	// }
+
+	// storageProduct := storage.NewMySQLProduct(storage.Pool())
+	// serviceProduct := product.NewService(storageProduct)
+
+	// m := &product.Model{
+	// 	ID:    1,
+	// 	Name:  "Curso CSS",
+	// 	Price: 200,
+	// }
+	// err := serviceProduct.Update(m)
+	// if err != nil {
+	// 	log.Fatalf("product.Update: %v", err)
+	// }
+
 	storageProduct := storage.NewMySQLProduct(storage.Pool())
 	serviceProduct := product.NewService(storageProduct)
 
-	if err := serviceProduct.Migrate(); err != nil {
-		log.Fatalf("product.Migrate: %v", err)
-	}
-
-	storageHeader := storage.NewMySQLInvoiceHeader(storage.Pool())
-	serviceHeader := invoiceheader.NewService(storageHeader)
-
-	if err := serviceHeader.Migrate(); err != nil {
-		log.Fatalf("header.Migrate: %v", err)
-	}
-
-	storageItem := storage.NewMySQLInvoiceItem(storage.Pool())
-	serviceItem := invoiceitem.NewService(storageItem)
-
-	if err := serviceItem.Migrate(); err != nil {
-		log.Fatalf("item.Migrate: %v", err)
+	err := serviceProduct.Delete(1)
+	if err != nil {
+		log.Fatalf("product.Delete: %v", err)
 	}
 }
