@@ -1,6 +1,11 @@
 package main
 
 import (
+	"log"
+
+	"github.com/whiteagleinc-meli/curso-bases-datos-go/pkg/invoiceheader"
+	"github.com/whiteagleinc-meli/curso-bases-datos-go/pkg/invoiceitem"
+	"github.com/whiteagleinc-meli/curso-bases-datos-go/pkg/product"
 	"github.com/whiteagleinc-meli/curso-bases-datos-go/storage"
 )
 
@@ -122,4 +127,25 @@ func main() {
 	// }
 
 	storage.New(storage.MySQL)
+
+	storageProduct := storage.NewMySQLProduct(storage.Pool())
+	serviceProduct := product.NewService(storageProduct)
+
+	if err := serviceProduct.Migrate(); err != nil {
+		log.Fatalf("product.Migrate: %v", err)
+	}
+
+	storageHeader := storage.NewMySQLInvoiceHeader(storage.Pool())
+	serviceHeader := invoiceheader.NewService(storageHeader)
+
+	if err := serviceHeader.Migrate(); err != nil {
+		log.Fatalf("header.Migrate: %v", err)
+	}
+
+	storageItem := storage.NewMySQLInvoiceItem(storage.Pool())
+	serviceItem := invoiceitem.NewService(storageItem)
+
+	if err := serviceItem.Migrate(); err != nil {
+		log.Fatalf("item.Migrate: %v", err)
+	}
 }
