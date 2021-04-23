@@ -122,6 +122,8 @@ func DAOProduct(driver Driver) (product.Storage, error) {
 	switch driver {
 	case Postgres:
 		return newPsqlProduct(db), nil
+	case MySQL:
+		return NewMySQLProduct(db), nil
 	default:
 		return nil, fmt.Errorf("Driver not implemented")
 	}

@@ -1,11 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
-	"github.com/whiteagleinc-meli/curso-bases-datos-go/pkg/invoice"
-	"github.com/whiteagleinc-meli/curso-bases-datos-go/pkg/invoiceheader"
-	"github.com/whiteagleinc-meli/curso-bases-datos-go/pkg/invoiceitem"
+	"github.com/whiteagleinc-meli/curso-bases-datos-go/pkg/product"
 	"github.com/whiteagleinc-meli/curso-bases-datos-go/storage"
 )
 
@@ -126,7 +125,8 @@ func main() {
 	// 	log.Fatalf("invoice.Create: %v", err)
 	// }
 
-	storage.New(storage.MySQL)
+	driver := storage.MySQL
+	storage.New(driver)
 
 	// storageProduct := storage.NewMySQLProduct(storage.Pool())
 	// serviceProduct := product.NewService(storageProduct)
@@ -193,25 +193,39 @@ func main() {
 	// 	log.Fatalf("product.Delete: %v", err)
 	// }
 
-	storageHeader := storage.NewMySQLInvoiceHeader(storage.Pool())
-	storageItems := storage.NewMySQLInvoiceItem(storage.Pool())
-	storageInvoice := storage.NewMySQLInvoice(
-		storage.Pool(),
-		storageHeader,
-		storageItems,
-	)
+	// storageHeader := storage.NewMySQLInvoiceHeader(storage.Pool())
+	// storageItems := storage.NewMySQLInvoiceItem(storage.Pool())
+	// storageInvoice := storage.NewMySQLInvoice(
+	// 	storage.Pool(),
+	// 	storageHeader,
+	// 	storageItems,
+	// )
 
-	m := &invoice.Model{
-		Header: &invoiceheader.Model{
-			Client: "Alexys",
-		},
-		Items: invoiceitem.Models{
-			&invoiceitem.Model{ProductID: 1},
-		},
+	// m := &invoice.Model{
+	// 	Header: &invoiceheader.Model{
+	// 		Client: "Alexys",
+	// 	},
+	// 	Items: invoiceitem.Models{
+	// 		&invoiceitem.Model{ProductID: 1},
+	// 	},
+	// }
+
+	// serviceInvoice := invoice.NewService(storageInvoice)
+	// if err := serviceInvoice.Create(m); err != nil {
+	// 	log.Fatalf("invoice.Create: %v", err)
+	// }
+
+	myStorage, err := storage.DAOProduct(driver)
+	if err != nil {
+		log.Fatalf("DAOProduct: %v", err)
 	}
 
-	serviceInvoice := invoice.NewService(storageInvoice)
-	if err := serviceInvoice.Create(m); err != nil {
-		log.Fatalf("invoice.Create: %v", err)
+	serviceProduct := product.NewService(myStorage)
+
+	ms, err := serviceProduct.GetAll()
+	if err != nil {
+		log.Fatalf("product.GetAll: %v", err)
 	}
+
+	fmt.Println(ms)
 }
